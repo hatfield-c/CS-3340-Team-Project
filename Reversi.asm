@@ -4,12 +4,9 @@
 
 .text main:
 
-	la $a0, str_MainTitle
-	li $v0, 4
+	#output: Display the title screen of the Reversi game
+	jal title_screen
+	
+	#method: End the application
+	li $v0, 10
 	syscall
-	
-exit:
-
-.data
-	
-	str_MainTitle:		.asciiz 	"------------------------\n|**********************|\n|******           *****|\n|******  Reversi  *****|\n|******           *****|\n|**********************|\n|                      |\n|  A Game Of Strategy  |\n| By The Forsaken Four |\n|                      |\n------------------------\n"
