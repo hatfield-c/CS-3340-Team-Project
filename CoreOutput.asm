@@ -69,11 +69,6 @@ display_subtitle:
 	li $v0, 4
         la $a0, ($a1)
         syscall
-        
-        
-	li   $v0,1
-	add  $a0, $0,$t3
-	syscall
 
 	
 	li   $v0,10
