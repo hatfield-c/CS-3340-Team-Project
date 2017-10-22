@@ -10,3 +10,4 @@
 	#method: End the application
 	li $v0, 10
 	syscall
+	

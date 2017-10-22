@@ -10,8 +10,6 @@ title_screen:
 	syscall
 	
 	jr $ra
-	
-exit_title_screen:
 
 .data
 	
