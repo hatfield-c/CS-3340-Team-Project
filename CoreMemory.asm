@@ -6,6 +6,7 @@
 # Save the return address and all saved registers to the stack
 # Before you call this function, make sure to move the $ra register
 # into the $a0 register so that it will be preserved across jal
+.text
 .globl saveAllRegisters
 saveAllRegisters:
 	#method: Save al the registers to the stack

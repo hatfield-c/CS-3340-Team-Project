@@ -2,6 +2,7 @@
 # of the title screen of the Reversi
 # game application
 
+.text
 .globl title_screen
 title_screen:
 
