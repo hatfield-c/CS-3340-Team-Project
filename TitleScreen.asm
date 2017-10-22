@@ -3,8 +3,8 @@
 # game application
 
 .text
-.globl title_screen
-title_screen:
+.globl renderTitleScreen
+renderTitleScreen:
 
 	la $a0, str_MainTitle
 	li $v0, 4

@@ -7,7 +7,7 @@
 main:
 
 	#output: Display the title screen of the Reversi game
-	jal title_screen
+	jal renderTitleScreen
 	
 	la $a0, tit
 	la $a1, subt

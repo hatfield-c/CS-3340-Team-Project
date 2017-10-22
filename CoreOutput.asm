@@ -1,6 +1,6 @@
 .data
-	newLine:    	.asciiz     	"\n"
-	whitespace:	.asciiz		" "
+	str_newLine:    	.asciiz     	"\n"
+	str_whitespace:	.asciiz		" "
 	delimWidth:	.word		10
 
 .text
@@ -22,8 +22,8 @@ renderTitle:
     	move $a0, $s2
     	jal printDelimiter
     
-    	#output: Print the whitespace between delimiter and title
-	la $a0, whitespace
+    	#output: Print the str_whitespace between delimiter and title
+	la $a0, str_whitespace
 	li $v0, 4
 	syscall
 	
@@ -32,8 +32,8 @@ renderTitle:
 	li $v0, 4
 	syscall
 	
-	#output: Print the whitespace between delimiter and title
-	la $a0, whitespace
+	#output: Print the str_whitespace between delimiter and title
+	la $a0, str_whitespace
 	li $v0, 4
 	syscall
 	
@@ -42,7 +42,7 @@ renderTitle:
 	jal printDelimiter
 	
 	#output: Print newline
-	la $a0, newLine
+	la $a0, str_newLine
 	li $v0, 4
 	syscall
 	
