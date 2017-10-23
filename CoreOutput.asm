@@ -17,7 +17,15 @@ renderTitle:
     	#method: Save registers to the stack
     	move $a0, $ra
     	jal saveAllRegisters
-    
+    	
+    	#method: Display 40 new lines before each launch to clear the screen
+newLine:
+    	la $a0, str_newLine
+	li $v0, 4
+	syscall
+	addi $a3,$a3,1
+	bne $a3,40,newLine
+    	
     	#method: Move the delimiter into $a0 and call printDelimiter
     	move $a0, $s2
     	jal printDelimiter
