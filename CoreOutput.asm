@@ -1,5 +1,5 @@
 .data
-	str_newLine:    	.asciiz     	"\n"
+	str_newLine:    .asciiz     	"\n"
 	str_whitespace:	.asciiz		" "
 	delimWidth:	.word		10
 
@@ -17,14 +17,6 @@ renderTitle:
     	#method: Save registers to the stack
     	move $a0, $ra
     	jal saveAllRegisters
-    	
-    	#method: Display 40 new lines before each launch to clear the screen
-newLine:
-    	la $a0, str_newLine
-	li $v0, 4
-	syscall
-	addi $a3,$a3,1
-	bne $a3,40,newLine
     	
     	#method: Move the delimiter into $a0 and call printDelimiter
     	move $a0, $s2
@@ -87,3 +79,18 @@ printDelimiter:
 	print_delim_complete:
 
 	jr $ra
+
+.globl clearScreen
+#method: Display 40 new lines before each launch to clear the screen
+clearScreen:
+	#method: Print the newline character
+    	la $a0, str_newLine
+	li $v0, 4
+	syscall
+	
+	#conditon: If 40 newlines haven't been printed yet, continue looping.
+	addi $a3, $a3, 1
+	bne $a3, 40, clearScreen
+	
+	jr $ra
+    	
