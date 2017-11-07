@@ -3,7 +3,7 @@
 # subroutines utilized in the
 # Reversi application
 
-# Save the return address and all saved registers to the stack
+# Save the return address and all saved registers to the stack.
 # Before you call this function, make sure to move the $ra register
 # into the $a0 register so that it will be preserved across jal
 .text
@@ -44,7 +44,7 @@ loadAllRegisters:
 	#method: Jump back to the address that called this function
 	jr $t1
 
-# Save the return address to the stack
+# Save the return address to the stack.
 # Before you call this function, make sure to move the $ra register
 # into the $a0 register so that it will be preserved across jal
 .globl saveReturnAdd
