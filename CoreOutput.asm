@@ -1,22 +1,35 @@
+# This file contains the core
+# output manipulation & formatting
+# subroutines utilized in the
+# Reversi application
+
 .data
 	str_newLine:    .asciiz     	"\n"
 	str_whitespace:	.asciiz		" "
 	delimWidth:	.word		10
+	ptr_a0:		.word		0
+	ptr_a1:		.word		0
+	ptr_a2:		.word		0
+	ptr_a3:		.word		0
 
 .text
 .globl renderTitle
 renderTitle:
-    	#method: Move arguments into saved registers
-    	# $s0 : title address
-    	# $s1 : subtitle address
-    	# $s2 : delimiter address
-	move $s0, $a0
-	move $s1, $a1
-	move $s2, $a2
+    	#method: Move arguments into memory
+    	# $a0 : title address
+    	# $a1 : subtitle address
+    	# $a2 : delimiter address
+	sw $a0, ptr_a0
+	sw $a1, ptr_a1
+	sw $a2, ptr_a2
     
     	#method: Save registers to the stack
     	move $a0, $ra
     	jal saveAllRegisters
+    	
+    	lw $s0, ptr_a0
+    	lw $s1, ptr_a1
+    	lw $s2, ptr_a2
     	
     	#method: Move the delimiter into $a0 and call printDelimiter
     	move $a0, $s2
