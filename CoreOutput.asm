@@ -7,28 +7,29 @@
 	str_newLine:    .asciiz     	"\n"
 	str_whitespace:	.asciiz		" "
 	delimWidth:	.word		10
-	ptr_title:	.word		0
-	ptr_delimiter:	.word		0
-	ptr_subtitle:	.word		0
+	ptr_a0:		.word		0
+	ptr_a1:		.word		0
+	ptr_a2:		.word		0
+	ptr_a3:		.word		0
 
 .text
 .globl renderTitle
 renderTitle:
-    	#method: Move arguments into saved registers
+    	#method: Move arguments into memory
     	# $a0 : title address
     	# $a1 : subtitle address
     	# $a2 : delimiter address
-	sw $a0, ptr_title
-	sw $a1, ptr_subtitle
-	sw $a2, ptr_delimiter
+	sw $a0, ptr_a0
+	sw $a1, ptr_a1
+	sw $a2, ptr_a2
     
     	#method: Save registers to the stack
     	move $a0, $ra
     	jal saveAllRegisters
     	
-    	lw $s0, ptr_title
-    	lw $s1, ptr_subtitle
-    	lw $s2, ptr_delimiter
+    	lw $s0, ptr_a0
+    	lw $s1, ptr_a1
+    	lw $s2, ptr_a2
     	
     	#method: Move the delimiter into $a0 and call printDelimiter
     	move $a0, $s2
