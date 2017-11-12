@@ -68,6 +68,64 @@ renderTitle:
 	jal loadAllRegisters
     
     	jr $ra
+    	
+.text
+.globl promptTitle
+promptTitle:
+    	#method: Move arguments into memory
+    	# $a0 : title address
+    	# $a1 : subtitle address
+    	# $a2 : delimiter address
+	sw $a0, ptr_a0
+	sw $a1, ptr_a1
+	sw $a2, ptr_a2
+    
+    	#method: Save registers to the stack
+    	move $a0, $ra
+    	jal saveAllRegisters
+    	
+    	lw $s0, ptr_a0
+    	lw $s1, ptr_a1
+    	lw $s2, ptr_a2
+    	
+    	#method: Move the delimiter into $a0 and call printDelimiter
+    	move $a0, $s2
+    	jal printDelimiter
+    
+    	#output: Print the str_whitespace between delimiter and title
+	la $a0, str_whitespace
+	li $v0, 4
+	syscall
+	
+	#output: Print the title
+	move $a0, $s0
+	li $v0, 4
+	syscall
+	
+	#output: Print the str_whitespace between delimiter and title
+	la $a0, str_whitespace
+	li $v0, 4
+	syscall
+	
+	#method: Move the delimiter into $a0 and call printDelimiter
+	move $a0, $s2
+	jal printDelimiter
+	
+	#output: Print newline
+	la $a0, str_newLine
+	li $v0, 4
+	syscall
+	
+	#output: Print subtitle
+	move $a0, $s1
+	li $v0, 4
+	syscall
+	
+	#method: Load registers from the stack
+	jal loadAllRegisters
+    
+    	jr $ra
+    	
     
 # Print the delimieter stored in $a0 10 times 
 printDelimiter:
