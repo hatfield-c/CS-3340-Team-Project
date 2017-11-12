@@ -74,16 +74,22 @@ renderTitle:
 promptTitle:
     	#method: Move arguments into memory
     	# $a0 : title address
+    	# $a1 : subtitle address
     	# $a2 : delimiter address
+    	# $a3 : string buffer
 	sw $a0, ptr_a0
+	sw $a1, ptr_a1
 	sw $a2, ptr_a2
+	sw $a3, ptr_a3
     
     	#method: Save registers to the stack
     	move $a0, $ra
     	jal saveAllRegisters
     	
     	lw $s0, ptr_a0
+    	lw $s1, ptr_a1
     	lw $s2, ptr_a2
+    	lw $s3, ptr_a3
     	
     	#method: Move the delimiter into $a0 and call printDelimiter
     	move $a0, $s2
@@ -94,10 +100,11 @@ promptTitle:
 	li $v0, 4
 	syscall
 	
-	#output: Print the title
-	move $a0, $s0
-	li $v0, 4
-	syscall
+	#output: Print title
+	la $a0, ($s3) #reload byte space to primary address
+        move $a0, $s0 # primary address = t0 address (load pointer)
+        li $v0, 4 # print string
+        syscall
 	
 	#output: Print the str_whitespace between delimiter and title
 	la $a0, str_whitespace
@@ -113,11 +120,17 @@ promptTitle:
 	li $v0, 4
 	syscall
 	
+	#output: Print subtitle
+	move $a0, $s1
+	li $v0, 4
+	syscall
+	
 	#method: Load registers from the stack
 	jal loadAllRegisters
     
     	jr $ra
     	
+
 .text
 .globl errorTitle
 errorTitle:
