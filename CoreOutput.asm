@@ -7,6 +7,8 @@
 	str_newLine:    	.asciiz     	"\n"
 	str_whitespace:		.asciiz		" "
 	str_promptDelim:	.asciiz		"-"
+	str_errorDelim:		.asciiz		"*"
+	str_errorTitle:		.asciiz		"ERROR"
 	delimWidth:		.word		10
 	ptr_a0:			.word		0
 	ptr_a1:			.word		0
@@ -104,44 +106,22 @@ renderPrompt:
 errorTitle:
     	#method: Move arguments into memory
     	# $a0 : subtitle address
-    	# $a2 : delimiter address
+    	# $a1 : delimiter address
 	sw $a0, ptr_a0
-	sw $a2, ptr_a2
     
     	#method: Save registers to the stack
     	move $a0, $ra
     	jal saveAllRegisters
     	
-    	lw $s0, ptr_a0
-    	lw $s2, ptr_a2
+    	#method: Pull arguments out of memory
+    	lw $a1, ptr_a0
+	
+	#method: Set the title to "ERROR" and the delimiter to "*"
+    	la $a0, str_errorTitle
+       	la $a2, str_errorDelim
     	
-    	#method: Move the delimiter into $a0 and call printDelimiter
-    	move $a0, $s2
-    	jal printDelimiter
-    
-    	#output: Print the str_whitespace between delimiter and title
-	la $a0, str_whitespace
-	li $v0, 4
-	syscall
-	
-	#output: Print the subtitle
-	move $a0, $s0
-	li $v0, 4
-	syscall
-	
-	#output: Print the str_whitespace between delimiter and title
-	la $a0, str_whitespace
-	li $v0, 4
-	syscall
-	
-	#method: Move the delimiter into $a0 and call printDelimiter
-	move $a0, $s2
-	jal printDelimiter
-	
-	#output: Print newline
-	la $a0, str_newLine
-	li $v0, 4
-	syscall
+    	#output: Print the error
+    	jal renderTitle
 		
 	#method: Load registers from the stack
 	jal loadAllRegisters
