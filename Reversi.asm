@@ -12,8 +12,8 @@ main:
 	#output: Test code for displaying a title on the command line
 	la $a0, tit
 	la $a1, subt
-	la $a2, del
-	jal renderTitle
+	#la $a2, del
+	jal renderPrompt
 	
 	#method: End the application
 	li $v0, 10
@@ -22,4 +22,4 @@ main:
 .data
 	tit:	.asciiz		"Title"
 	subt:	.asciiz		"Subtitle"
-	del:	.asciiz		"-"
+	#del:	.asciiz		"-"
