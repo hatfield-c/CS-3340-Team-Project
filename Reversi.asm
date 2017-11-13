@@ -5,19 +5,7 @@
 .text 
 .globl main
 main:
-
-	#output: Display the title screen of the Reversi game
-	jal renderTitleScreen
-	
-	#output: Test code for displaying a title on the command line
-	#la $a0, tit
-	la $a0, subt
-	#la $a2, del
-	jal renderNotice
 	
 	#method: End the application
 	li $v0, 10
 	syscall
-	
-.data
-	subt:	.asciiz		"Subtitle"
