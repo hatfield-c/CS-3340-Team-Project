@@ -8,7 +8,9 @@
 	str_whitespace:		.asciiz		" "
 	str_promptDelim:	.asciiz		"-"
 	str_errorDelim:		.asciiz		"*"
+	str_noticeDelim:	.asciiz		"="
 	str_errorTitle:		.asciiz		"ERROR"
+	str_noticeTitle:	.asciiz		"NOTICE"
 	delimWidth:		.word		10
 	ptr_a0:			.word		0
 	ptr_a1:			.word		0
@@ -79,6 +81,7 @@ renderPrompt:
     	# $a0 : title address
     	# $a1 : subtitle address
     	# $a2 : delimiter address
+    	# $a3 : string buffer
 	sw $a0, ptr_a0
 	sw $a1, ptr_a1
     
@@ -101,12 +104,12 @@ renderPrompt:
     
     	jr $ra
     	
+
 .text
 .globl errorTitle
 errorTitle:
     	#method: Move arguments into memory
     	# $a0 : subtitle address
-    	# $a1 : delimiter address
 	sw $a0, ptr_a0
     
     	#method: Save registers to the stack
@@ -122,6 +125,31 @@ errorTitle:
     	
     	#output: Print the error
     	jal renderTitle
+		
+	#method: Load registers from the stack
+	jal loadAllRegisters
+    
+    	jr $ra
+ 
+.globl renderNotice
+renderNotice:
+    	#method: Move arguments into memory
+    	# $a0 : subtitle address
+	sw $a0, ptr_a0
+    
+    	#method: Save registers to the stack
+    	move $a0, $ra
+    	jal saveAllRegisters
+    	
+    	#method: Pull arguments out of memory
+    	lw $a1, ptr_a0
+    	
+    	#method: Set the title to "NOTICE" and the delimiter to "="
+	la $a0, str_noticeTitle
+	la $a2, str_noticeDelim
+	
+	#output: Print the error
+	jal renderTitle
 		
 	#method: Load registers from the stack
 	jal loadAllRegisters

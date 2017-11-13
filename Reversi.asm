@@ -10,16 +10,14 @@ main:
 	jal renderTitleScreen
 	
 	#output: Test code for displaying a title on the command line
-	la $a0, tit
-	la $a1, subt
+	#la $a0, tit
+	la $a0, subt
 	#la $a2, del
-	jal renderPrompt
+	jal renderNotice
 	
 	#method: End the application
 	li $v0, 10
 	syscall
 	
 .data
-	tit:	.asciiz		"Title"
 	subt:	.asciiz		"Subtitle"
-	#del:	.asciiz		"-"
