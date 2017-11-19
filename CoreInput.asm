@@ -1,61 +1,62 @@
 .data
-	#Used asciiz string in order to get the ascii value bits from memory
-	Input: .asciiz "A1"
+	ptr_a0:		.word		0
 .text
-#PRJ-13
-	#sets $t0 and $t1 to 0 and 1 in order to retrieve their corresponding bytes from the string
-	add $t0, $zero, $zero
-	addi $t1, $zero, 1
-	j checkCharInt
-#PRJ-12
-.globl ifBetween
-ifBetween:
+.globl checkIntRange
+checkIntRange:
 	#$a0 : Word
 	#$a1 : Lower Value
 	#$a2 : Upper Value
-	#$v0 : Resulting Value
+	#$v0 : Result
+	li $v0, 0
+	
 	#checks if $a0 >= $a1
-	bge $a0, $a1, Next
-	j False
+	blt $a0, $a1, range_check_complete
 	
-	Next:
 	#checks if $a0 <= $a2
-	ble $a0, $a2, True 
-	j False
+	bgt $a0, $a2, range_check_complete
 	
-	False:
-	#sets $v0 to zero if either test fails
-	addi $v0, $zero, 0
-	addi $t0, $zero, 1
-	add $t1, $zero, $zero
-	j checkCharInt
+	#sets $v0 to one if both tests pass
+	li $v0, 1
 	
-	True:
-	#sets $v0 to one is both tests pass
-	addi $v0, $zero, 1
+	range_check_complete:
 	jr $ra
 	
-.globl checkCharInt
-checkCharInt:
-	#$a0 : Char Value
-	#loads first byte of Input string from memory
-	lb $a0, Input($t0)
-	#ascii values of 1 and 9
+.globl isInteger
+isInteger:
+	#$a0 : ascii code to test
+	#method: Move $a0 into pointer to preserve it
+	sw $a0, ptr_a0
+	
+	#method: Save return address to the stack
+	move $a0, $ra
+	jal saveReturnAdd
+	
+	#method: Check if the ascii value in $a0 is within the the acsii values of 1 and 9 (49 and 57)
+	lw $a0, ptr_a0
 	li $a1, 49
 	li $a2, 57
-	jal ifBetween
+	jal checkIntRange
+	
+	#method: Reload the return address, and return to caller
+	jal loadReturnAdd
+	jr $ra
 
-#PRJ-14
-.globl checkCharLetter
-checkCharLetter:
-	#$a0 : Char Value
-	#Loads the next byte of Input String from memory
-	lb $a0, Input($t1)
-	#ascii values of A and H
+.globl isChar
+isChar:
+	#$a0 : ascii code to test
+	#method: Move $a0 into pointer to preserve it
+	sw $a0, ptr_a0
+	
+	#method: Save return address to the stack
+	move $a0, $ra
+	jal saveReturnAdd
+	
+	#method: Check if the ascii value in $a0 is within the the acsii values of A and H (65 and 72)
+	lw $a0, ptr_a0
 	li $a1, 65
 	li $a2, 72
-	jal ifBetween
-	j end
+	jal checkIntRange
 	
-end:
-	#end of code
+	#method: Reload the return address, and return to caller
+	jal loadReturnAdd
+	jr $ra
