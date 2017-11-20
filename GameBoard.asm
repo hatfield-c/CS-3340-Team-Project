@@ -166,7 +166,7 @@ displayGameboard:
 	
 	#update to next element position
 	addi $t0, $t0, 1
-	beq $t0, 9, notNewRow
+	bne $t0, 9, notNewRow
 	addi $t1, $t1, 1
 	add $t0, $zero, $zero
 	notNewRow:
