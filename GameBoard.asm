@@ -7,7 +7,11 @@
 	ptr_a1:			.word		0
 	ptr_a2:			.word		0
 	ptr_a3:			.word		0
-
+	firstRow: 		.asciiz "   A  B  C  D  E  F  G  H"
+	leftBracket: 		.asciiz "["
+	rightBracket: 		.asciiz "]"
+	space: 			.asciiz " "
+	newLine: 		.asciiz "\n"
 .text
 .globl readElement
 readElement:
@@ -105,3 +109,83 @@ getElement:
 	
 	#method: Return to callee
 	jr $ra
+	
+.globl displayGameboard
+displayGameboard:
+	
+	#method: Save registers to the stack
+    	move $a0, $ra
+    	jal saveAllRegisters
+    	
+	#set row and colomn at 0,0
+	add $t0,$zero,$zero
+	add $t1,$zero,$zero
+	
+	#clear s1 s2 register in case not empty
+	add $s1,$zero,$zero
+	add $s2,$zero,$zero
+	
+	#display row one
+	la $a0,firstRow
+	li $v0,4
+	syscall
+	
+	#disply row two to row nine
+	displayRows:
+	#start new line
+	la $a0,newLine
+	li $v0,4
+	syscall
+		
+	#display row number
+	addi $s1, $s1, 1
+	move $a0,$s1
+	li $v0,1
+	syscall
+	
+	#add space after row number
+	la $a0,space
+	li $v0,4
+	syscall
+
+	displayEachElement:
+	
+	#element counter
+	addi $s2, $s2, 1
+	
+	#left bracket
+	la $a0,leftBracket
+	li $v0,4
+	syscall
+	
+	#calling and display the element in the array
+	jal getElement
+	move $a0, $v0
+	li $v0,4
+	syscall
+	
+	#update to next element position
+	addi $t0, $t0, 1
+	beq $t0, 9, notNewRow
+	addi $t1, $t1, 1
+	add $t0, $zero, $zero
+	notNewRow:
+	
+	
+	#right bracket
+	la $a0,rightBracket
+	li $v0,4
+	syscall
+	
+	#display 8 elements with brackets
+	bne $s2, 8, displayEachElement
+	#after displaying 8 elements, clear counter
+	add $s2, $zero, $zero
+	#go to the next rows
+	bne $s1, 8, displayRows
+	
+	#method: Load the registers from the stack
+	jal loadAllRegisters
+	
+	#method: Return to callee
+	jr $ra 

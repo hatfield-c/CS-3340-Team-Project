@@ -5,7 +5,7 @@
 .text 
 .globl main
 main:
-	
+	jal displayGameboard
 	#method: End the application
 	li $v0, 10
 	syscall
