@@ -159,9 +159,10 @@ displayGameboard:
 	syscall
 	
 	#calling and display the element in the array
-	jal getElement
+	# jal getElement
+	li $v0, 32 #all space, testing purpost. try 88 for "X", 79 for "O"
 	move $a0, $v0
-	li $v0,4
+	li $v0,11
 	syscall
 	
 	#update to next element position
