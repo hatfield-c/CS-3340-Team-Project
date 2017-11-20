@@ -160,7 +160,7 @@ displayGameboard:
 	
 	#calling and display the element in the array
 	# jal getElement
-	li $v0, 32 #all space, testing purpost. try 88 for "X", 79 for "O"
+	li $v0, 32 #all space, testing purpose. try 88 for "X", 79 for "O"
 	move $a0, $v0
 	li $v0,11
 	syscall
