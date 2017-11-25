@@ -12,12 +12,11 @@
 	oMovesList:		.space		256
 
 .text
-.global readBoardPosition
+.globl readBoardPosition
 readBoardPosition:
-# $v0 : The word stored at the element
+	# $v0 : The word stored at the position on the board
 	# $a0 : Row of board
 	# $a1 : Column of board
-	# $v0 : Value at the position of the board
 
     	#method: Move arguments into memory
 	sw $a0, ptr_a0
@@ -33,11 +32,7 @@ readBoardPosition:
     	la $a2, boardData
     	
 	#method: Get the address of the element to write to
-	jal getElement
-	move $t2, $v0
-	
-	#method: Read the element from the position
-	lw $v0, 0($t2)
+	jal readElement
 	
 	#method: Load the registers from the stack
 	jal loadAllRegisters
@@ -47,12 +42,39 @@ readBoardPosition:
 	
 .globl writeBoardPosition
 writeBoardPosition:
+	# $a0 : Word to write to board
+	# $a1 : Row of board
+	# $a2 : Column of board
+
+    	#method: Move arguments into memory
+	sw $a0, ptr_a0
+	sw $a1, ptr_a1
+	sw $a2, ptr_a2
+    
+    	#method: Save registers to the stack
+    	move $a0, $ra
+    	jal saveAllRegisters
+    	
+    	#method: Pull arguments out of memory
+    	lw $a0, ptr_a0
+    	lw $a1, ptr_a1
+    	lw $a2, ptr_a2
+    	la $a3, boardData
+    	
+	#method: Get the address of the element to write to
+	jal writeElement
+	
+	#method: Load the registers from the stack
+	jal loadAllRegisters
+	
+	#method: Return to callee
+	jr $ra 
 
 .globl readElement
 readElement:
 	# $v0 : The word stored at the element
-	# $a0 : Row of board
-	# $a1 : Column of board
+	# $a0 : Row of table
+	# $a1 : Column of table
 	# $a2 : Address of table to read from
 	# $t2 : Address of element
 
@@ -86,8 +108,8 @@ readElement:
 .globl writeElement
 writeElement:
 	# $a0 : Word to write
-	# $a1 : Row of board
-	# $a2 : Column of board
+	# $a1 : Row of table
+	# $a2 : Column of table
 	# $a3 : Address of table to write to
 	# $t3 : Address of element
 	
@@ -149,6 +171,16 @@ getElement:
 	add $v0, $v0, $t3
 	
 	#method: Return to callee
+	jr $ra
+
+.globl isPositionValidMove
+isPositionValidMove:
+	# $v0 : If the move is valid
+	# $a0 : Row of board
+	# $a1 : Column of board
+	
+	
+	
 	jr $ra
 
 .globl compileValidMoves
