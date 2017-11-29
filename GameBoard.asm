@@ -7,11 +7,15 @@
 	ptr_a1:			.word		0
 	ptr_a2:			.word		0
 	ptr_a3:			.word		0
-	firstRow: 		.asciiz "   A  B  C  D  E  F  G  H"
-	leftBracket: 		.asciiz "["
-	rightBracket: 		.asciiz "]"
-	space: 			.asciiz " "
-	newLine: 		.asciiz "\n"
+	numX:			.word		0
+	numO:			.word		0
+	numberOfX:		.asciiz		"\n\n  X Pieces: "
+	numberOfO:		.asciiz		"\n  O Pieces: "
+	firstRow: 		.asciiz 	"   A  B  C  D  E  F  G  H"
+	leftBracket: 		.asciiz 	"["
+	rightBracket: 		.asciiz 	"]"
+	space: 			.asciiz 	" "
+	newLine: 		.asciiz 	"\n"
 
 .text
 .globl readBoardPosition
@@ -226,11 +230,29 @@ displayGameboard:
 	addi $t0, $s1, -1
 	addi $t1, $s2, -1
 	
-	#calling and display the element in the array
+	#method: reading the board position
 	move $a0, $t0
 	move $a1, $t1
 	jal readBoardPosition
-	#li $v0, 32 #all space, testing purpose. try 88 for "X", 79 for "O"
+
+	#numX is the total number of X
+	#numY is the total number of O
+
+	#condition: If the board position is X, then add 1 to numX
+	bne $v0, 88, count_X #check if it's X
+	lw $t0, numX
+	addi $t0, $t0, 1 #register $s3 count number of "X"
+	sw $t0, numX
+	count_X:
+	
+	#condition: If the board position is Y, then add 1 to numY
+	bne $v0, 79, count_O #check if it's O
+	lw $t0, numO
+	addi $s4, $s4, 1 #register $s4 count number of "0"
+	lw $t0, numO
+	count_O:
+	
+	#output: Print the character at the board position
 	move $a0, $v0
 	li $v0,11
 	syscall
@@ -253,6 +275,24 @@ displayGameboard:
 	add $s2, $zero, $zero
 	#go to the next rows
 	bne $s1, 8, displayRows
+	
+	#output: Print the number of X pieces
+	la $a0, numberOfX
+	li $v0, 4
+	syscall
+	
+	lw $a0, numX
+	li $v0, 1
+	syscall
+	
+	#output: Print the number of O pieces
+	la $a0, numberOfO
+	li $v0, 4
+	syscall
+	
+	lw $a0, numO
+	li $v0, 1
+	syscall
 	
 	#method: Load the registers from the stack
 	jal loadAllRegisters
