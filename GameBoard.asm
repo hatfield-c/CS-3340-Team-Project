@@ -159,7 +159,19 @@ displayGameboard:
 	syscall
 	
 	#calling and display the element in the array
+	#s3 is the total number of X
+	#s4 is the total number of O
 	# jal getElement
+	bne $v0, 88, notX #check if it's X
+	addi $s3, $s3, 1 #register $s3 count number of "X"
+	
+	notX:
+	
+	bne $v0, 79, notO #check if it's O
+	addi $s4, $s4, 1 #register $s4 count number of "0"
+	
+	notO:
+	
 	li $v0, 32 #all space, testing purpose. try 88 for "X", 79 for "O"
 	move $a0, $v0
 	li $v0,11
