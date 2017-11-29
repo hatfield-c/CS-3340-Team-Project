@@ -5,10 +5,15 @@
 .text 
 .globl main
 main:
-	li $a0, 5
+	li $a0, 88
 	li $a1, 1
 	li $a2, 1
 	jal writeBoardPosition
+	
+	li $a1, 1
+	li $a2, 1
+	jal readBoardPosition
+	move $s0, $v0
 
 	jal displayGameboard
 	

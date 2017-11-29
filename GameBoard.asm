@@ -182,8 +182,8 @@ displayGameboard:
     	jal saveAllRegisters
     	
 	#set row and colomn at 0,0
-	add $t0, $zero,$zero
-	add $t1, $zero,$zero
+	add $s3, $zero,$zero
+	add $s4, $zero,$zero
 	
 	#clear s1 s2 register in case not empty
 	add $s1, $zero,$zero
@@ -222,6 +222,10 @@ displayGameboard:
 	li $v0,4
 	syscall
 	
+	#method: get current position on board (0 centered)
+	addi $t0, $s1, -1
+	addi $t1, $s2, -1
+	
 	#calling and display the element in the array
 	move $a0, $t0
 	move $a1, $t1
@@ -232,10 +236,10 @@ displayGameboard:
 	syscall
 	
 	#update to next element position
-	addi $t0, $t0, 1
-	bne $t0, 9, notNewRow
-	addi $t1, $t1, 1
-	add $t0, $zero, $zero
+	addi $s3, $s3, 1
+	bne $s3, 9, notNewRow
+	addi $s4, $s4, 1
+	add $s3, $zero, $zero
 	notNewRow:
 	
 	#right bracket
