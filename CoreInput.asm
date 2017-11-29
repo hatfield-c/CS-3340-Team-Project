@@ -60,3 +60,11 @@ isChar:
 	#method: Reload the return address, and return to caller
 	jal loadReturnAdd
 	jr $ra
+	
+	
+.globl getPositionString
+getPositionString:
+	li $v0, 8 #syscall code 8 for read_string
+	la $a0, ptr_a0 
+	li $a1, 2 #read 2 characters
+	syscall
