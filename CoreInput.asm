@@ -1,7 +1,7 @@
 .data
 	ptr_a0:				.word		0
 	str_getUserInputTitle:		.asciiz		"YOUR MOVE"
-	str_getUserInputSubtitle:	.asciiz		"Please choose where you would like to place your piece.\nYou can enter your choice in any order, but it must be capitalized.\n(Example: A3 or 2B)\n\n[INPUT]: "
+	str_getUserInputSubtitle:	.asciiz		"Please choose a valid position to place your piece.\nYou can enter your choice in any order, but it must be capitalized.\n(Example: A3 or 2B)\n\n[INPUT]: "
 	str_playAgainTitle:		.asciiz		"PLAY AGAIN?"
 	str_playAgainSubtitle:		.asciiz		"Would you like to play again?\n1. Return to main menu\n2. Exit application\n\n[INPUT]: "
 	str_userInput:			.asciiz		""
@@ -127,8 +127,7 @@ getUserInput:
 		move $s1, $t0
 		
 		#method: Input is validated
-		li $s2, 1
-		j validation_complete
+		j input_validated
 	
 		first_is_int:
 		#condition: Check if the second character is a letter
@@ -136,9 +135,20 @@ getUserInput:
 		jal isChar
 		beqz $v0, validation_complete
 		
-		#method: Input is validated
+		input_validated:
+		#method: Set the inputs to be aligned with the rows & columns of a table
+		addi $s0, $s0, -49
+		addi $s1, $s1, -65
+	
+		#method: Check if is legal move
+		move $a0, $s0
+		move $a1, $s1
+		li $a2, 88
+		jal isValidMove
+		beqz $v0, validation_complete
+		
+		#method: Input is validated and move is legal
 		li $s2, 1
-		j validation_complete
 	
 	validation_complete:
 	
@@ -151,10 +161,6 @@ getUserInput:
 	j begin_validation
 	
 	return_input:
-	
-	#method: Set the inputs to be aligned with the rows & columns of a table
-	addi $s0, $s0, -49
-	addi $s1, $s1, -65
 	
 	#method: Combine the user input into a single register
 	sll $s3, $s0, 4

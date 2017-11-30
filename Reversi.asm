@@ -33,9 +33,24 @@ runApplication:
 	#output: Render the gameboard
 	jal displayGameboard
 	
-	#input: Get the validated user input for their move position this turn
+	#input: Get the validated input for the user's move this turn
 	jal getUserInput
-	move $t7, $v0
+	
+	#method: Extract the row data
+	srl $t0, $v0, 4
+	
+	#method: Extract the column data
+	andi $t1, $v0, 0xf
+	
+	#method: Place the user's piece on the board
+	li $a0, 88
+	move $a1, $t0
+	move $a2, $t1
+	jal placePiece
+	
+	#jal computerTurn
+	
+	j begin_turn
 	
 	#method: Load the return address
 	jal loadReturnAdd

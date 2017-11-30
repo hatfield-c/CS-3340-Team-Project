@@ -12,7 +12,7 @@
 	numO:			.word		0
 	numberOfX:		.asciiz		"\n\n  X Pieces (You)     : "
 	numberOfO:		.asciiz		"\n  O Pieces (Computer): "
-	firstRow: 		.asciiz 	"   A  B  C  D  E  F  G  H"
+	firstRow: 		.asciiz 	"\n   A  B  C  D  E  F  G  H"
 	leftBracket: 		.asciiz 	"["
 	rightBracket: 		.asciiz 	"]"
 	space: 			.asciiz 	" "
@@ -294,6 +294,157 @@ canCaptureDirection:
 	#method: Reload all registers, and return to caller
 	jal loadAllRegisters
 	jr $ra
+	
+captureDirection:
+	# $a0 : initial row
+	# $a1 : initial column
+	# $a2 : row direction
+	# $a3 : column direction
+	# $s4 : player piece code
+	
+	#method: Place arguments in memory
+	sw $a0, ptr_a0
+	sw $a1, ptr_a1
+	sw $a2, ptr_a2
+	sw $a3, ptr_a3
+	
+	#method: Save registers to the stack
+	move $a0, $ra
+	jal saveAllRegisters
+	
+	#method: Pull arguments from memory
+	lw $s0, ptr_a0
+	lw $s1, ptr_a1
+	lw $s2, ptr_a2
+	lw $s3, ptr_a3
+	lw $s4, ptr_a4
+	
+	#condition: Check if can capture in this direction
+	move $a0, $s0
+	move $a1, $s1
+	move $a2, $s2
+	move $a3, $s3
+	jal canCaptureDirection
+	beqz $v0, capture_complete
+	
+	begin_capture:
+	add $s0, $s0, $s2
+	add $s1, $s1, $s3
+	
+	#method: Check the current position for an enemy piece
+	move $a0, $s0
+	move $a1, $s1
+	jal readBoardPosition
+	
+	#condition: If a capturer's piece is detected, the capture is complete
+	beq $v0, $s4, capture_complete
+	
+	#method: Replace opponent's piece with capturer's piece
+	move $a0, $s4
+	move $a1, $s0
+	move $a2, $s1
+	jal writeBoardPosition
+	j begin_capture
+	
+	capture_complete:
+	
+	#method: Reload all registers, and return to caller
+	jal loadAllRegisters
+	jr $ra
+	
+.globl placePiece
+placePiece:
+	# $a0 : the player piece to place
+	# $a1 : the row on the board to place the piece
+	# $a2 : the column on the board to place the piece
+
+	#method: Move arguments into memory
+	sw $a0, ptr_a0
+	sw $a1, ptr_a1
+	sw $a2, ptr_a2
+	
+	#method: Save registers to the stack
+	move $a0, $ra
+	jal saveAllRegisters
+	
+	#method: Move the arguments out of memory
+	lw $s0, ptr_a0
+	lw $s1, ptr_a1
+	lw $s2, ptr_a2
+	
+	#method: Write the piece to the gameboard
+	move $a0, $s0
+	move $a1, $s1
+	move $a2, $s2
+	jal writeBoardPosition
+	
+	#method: Capture top left
+	move $a0, $s1
+	move $a1, $s2
+	li $a2, -1
+	li $a3, -1
+	sw $s0, ptr_a4
+	jal captureDirection
+	
+	#method: Capture top center
+	move $a0, $s1
+	move $a1, $s2
+	li $a2, -1
+	li $a3, 0
+	sw $s0, ptr_a4
+	jal captureDirection
+	
+	#method: Capture top right
+	move $a0, $s1
+	move $a1, $s2
+	li $a2, -1
+	li $a3, 1
+	sw $s0, ptr_a4
+	jal captureDirection
+	
+	#method: Capture middle left
+	move $a0, $s1
+	move $a1, $s2
+	li $a2, 0
+	li $a3, -1
+	sw $s0, ptr_a4
+	jal captureDirection
+	
+	#method: Capture middle right
+	move $a0, $s1#----------------------------------------------------------------------------------------
+	move $a1, $s2
+	li $a2, 0
+	li $a3, 1
+	sw $s0, ptr_a4
+	jal captureDirection
+	
+	#method: Capture bottom left
+	move $a0, $s1
+	move $a1, $s2
+	li $a2, 1
+	li $a3, -1
+	sw $s0, ptr_a4
+	jal captureDirection
+	
+	#method: Capture bottom center
+	move $a0, $s1
+	move $a1, $s2
+	li $a2, 1
+	li $a3, 0
+	sw $s0, ptr_a4
+	jal captureDirection
+	
+	#method: Capture bottom right
+	move $a0, $s1
+	move $a1, $s2
+	li $a2, 1
+	li $a3, 1
+	sw $s0, ptr_a4
+	jal captureDirection
+
+	#method: Load registers from the stack
+	jal loadAllRegisters
+	jr $ra
 
 .globl isValidMove
 isValidMove:
@@ -426,6 +577,10 @@ displayGameboard:
 	#clear s1 s2 register in case not empty
 	add $s1, $zero,$zero
 	add $s2, $zero,$zero
+	
+	#method: Clear the piece counter numbers
+	sw $zero, numX
+	sw $zero, numO
 	
 	#display row one
 	la $a0, firstRow
