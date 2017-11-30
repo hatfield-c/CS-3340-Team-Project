@@ -37,6 +37,11 @@ renderTitle:
     	lw $s1, ptr_a1
     	lw $s2, ptr_a2
     	
+    	#method: Print newline
+    	la $a0, str_newLine
+    	li $v0, 4
+    	syscall
+    	
     	#method: Move the delimiter into $a0 and call printDelimiter
     	move $a0, $s2
     	jal printDelimiter
@@ -106,8 +111,8 @@ renderPrompt:
     	
 
 .text
-.globl errorTitle
-errorTitle:
+.globl renderError
+renderError:
     	#method: Move arguments into memory
     	# $a0 : subtitle address
 	sw $a0, ptr_a0
