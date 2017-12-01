@@ -411,7 +411,7 @@ placePiece:
 	jal captureDirection
 	
 	#method: Capture middle right
-	move $a0, $s1#----------------------------------------------------------------------------------------
+	move $a0, $s1
 	move $a1, $s2
 	li $a2, 0
 	li $a3, 1
@@ -640,16 +640,19 @@ displayGameboard:
 	j finish_print_char
 	count_O:
 	
+	#method: If the board is empty, then replace the null character with the ascii code for space
+	li $s5, 32
+	
 	#DEBUGGIN
 	#method: Check if this space is a valid move
-	addi $a0, $s1, -1
-	addi $a1, $s2, -1
-	li $a2, 88
-	jal isValidMove
+	#addi $a0, $s1, -1
+	#addi $a1, $s2, -1
+	#li $a2, 88
+	#jal isValidMove
 	
 	#condition: If the space is a valid move, print out a *
-	beqz $v0, finish_print_char
-	li $s5, 42
+	#beqz $v0, finish_print_char
+	#li $s5, 42
 	finish_print_char:
 	
 	#output: Print the character at the board position

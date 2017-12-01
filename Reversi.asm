@@ -5,18 +5,20 @@
 .text 
 .globl main
 main:
+	
 	#input: Get the users menu choice
-	#jal getMainMenu
-	#beq $v0, 2, end_application
+	jal getMainMenu
+	beq $v0, 2, end_application
 	
 	#method: Begin running the application
 	jal runApplication
 	
-	#method: Check if pplayer wants to play again
-	#jal playAgain
-	#beq $v0, 2, end_application
-	#j main
+	#method: Check if player wants to play again
+	jal playAgain
+	beq $v0, 2, end_application
+	j main
 	end_application:
+	
 	#method: End the application
 	li $v0, 10
 	syscall
@@ -48,9 +50,17 @@ runApplication:
 	move $a2, $t1
 	jal placePiece
 	
-	#jal computerTurn
+	#output: Render the gameboard
+	jal displayGameboard
 	
-	j begin_turn
+	#method: The computer takes its turn
+	jal computerTurn
+	
+	#method: Check if there are valid moves remaining for the user
+	jal validMovesRemaining 
+	
+	#method: If there are valid moves remaining, continue the game
+	bnez $v0, begin_turn
 	
 	#method: Load the return address
 	jal loadReturnAdd
